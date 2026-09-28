@@ -1,10 +1,11 @@
+let result;
 function calculate() {
   /*const inputs = [
     document.getElementById("op1"),
     document.getElementById("op2")
   ];*/
-  const option1 = document.getElementById("op1").value;
-  const option2 = document.getElementById("op2").value;
+  const option1 = parseInt(document.getElementById("op1").value);
+  const option2 = parseInt(document.getElementById("op2").value);
 
   //let values = [];
   /*for (let input of inputs) {
@@ -21,11 +22,11 @@ function calculate() {
     values.push(parseFloat(input.value));
   }*/
 
-  if (option1 === "" ) {
+  if (option1 === " ") {
     alert("All fields must be filled.");
       console.log("All fields must be filled.");
       return;
-  } else if (isNaN(option1.value)) {
+  } else if (isNaN(option1)) {
     alert("All fields must be numbers.");
       console.log("All fields must be numbers.");
       return;
@@ -33,7 +34,7 @@ function calculate() {
     alert("All fields must be filled.");
       console.log("All fields must be filled.");
       return;
-  } else if (isNaN(option2.value)) {
+  } else if (isNaN(option2)) {
     alert("All fields must be numbers.");
       console.log("All fields must be numbers.");
       return;
@@ -42,7 +43,6 @@ function calculate() {
   const form = document.getElementById("calcForm");
   let operation = form.elements["operation"].value;
 
-  let result;
   switch (operation) {
     case "add":
       result = option1 + option2;
@@ -56,7 +56,7 @@ function calculate() {
     case "divide":
       if (option2 === 0) {
         alert("Cannot divide by zero!");
-        console.log(`${option2} debe ser diferente de 0`);
+        console.log(`${option2} debe ser otro númmero`);
         return;
       }
       result = option1 / option2;
@@ -68,5 +68,16 @@ function calculate() {
   }
 
   alert("Result: " + result);
+  }
 }
+
+function convert_binary() {
+  if (result !== "") {
+    let convertir = result.toString(2);
+    alert("Result in binary: "+  convertir);
+    console.log("Result in binary: " + convertir);
+  } else {
+    alert("El resultado necesita estar calculado");
+    console.log("El resultado necesita estar calculado");
+  }
 }
