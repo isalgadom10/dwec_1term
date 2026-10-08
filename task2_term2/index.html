@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <title>Student Grades</title>
@@ -9,6 +9,10 @@
   <h2>Student Grades</h2>
 
   <form id="gradesForm">
+
+    <label for="students">How many students are you going to add?</label>
+    <input type="text" id="students"><br><br>
+    
     <label for="name">Name:</label>
     <input type="text" id="name"><br><br>
 
@@ -22,6 +26,7 @@
     <input type="text" id="science"><br><br>
 
     <button type="button" onclick="calculateAvg()">Calculate Average</button>
+    <button type="button" onclick="addstudent()">Add Student</button>
   </form>
 </body>
 </html>
