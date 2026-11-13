@@ -1,12 +1,117 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>battleShip</title>
+    <title>BattleShip</title>
+    <link rel="stylesheet" href="estilos.css">
     <script src="script.js" defer></script>
 </head>
 <body>
-    <div></div>
+    <header class="cabecera">
+        <div>
+            <p class="sobretitulo">CLASSIC GAME</p>
+            <h1>BattleShip</h1>
+            <p class="subtitulo">Get your fleet ready and spot the enemy ships.</p>
+        </div>
+        <button id="nuevo-juego" class="boton boton-secundario" type="button">New game</button>
+    </header>
+
+    <main class="contenedor">
+        <section class="panel-configuracion" aria-labelledby="titulo-configuracion">
+            <div>
+                <h2 id="titulo-configuracion">Fleet configuration</h2>
+                <p class="ayuda">Select the boat and its orientation before placing it.</p>
+            </div>
+
+            <div class="controles">
+                <label for="selector-barco">Ship</label>
+                <select id="selector-barco">
+                    <option value="portaaviones">Carrier (5 casillas)</option>
+                    <option value="acorazado">Battleship (4 casillas)</option>
+                    <option value="destructor">Destroyer (3 casillas)</option>
+                    <option value="submarino">Submarine (3 casillas)</option>
+                    <option value="patrullero">Patrol Boat (2 casillas)</option>
+                </select>
+
+                <span class="etiqueta-orientacion">Orientation</span>
+                <div class="grupo-botones" role="group" aria-label="Orientación del barco">
+                    <button id="horizontal" class="boton boton-orientacion activo" type="button" aria-pressed="true">Horizontal</button>
+                    <button id="vertical" class="boton boton-orientacion" type="button" aria-pressed="false">Vertical</button>
+                </div>
+            </div>
+        </section>
+
+        <p id="mensaje" class="mensaje" role="status" aria-live="polite">
+            Welcome. Place your hips on the board to begin.
+        </p>
+
+        <section class="zona-tableros" aria-label="Tableros de juego">
+            <article class="panel-tablero">
+                <div class="titulo-tablero">
+                    <div>
+                        <h2>Your fleet</h2>
+                        <p>Player's board</p>
+                    </div>
+                    <span class="indicador indicador-jugador">PLAYER</span>
+                </div>
+
+                <div class="marco-tablero">
+                    <div class="esquina" aria-hidden="true"></div>
+                    <div class="coordenadas-columnas" aria-hidden="true">
+                        <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span>
+                        <span>F</span><span>G</span><span>H</span><span>I</span><span>J</span>
+                    </div>
+                    <div class="coordenadas-filas" aria-hidden="true">
+                        <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                        <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+                    </div>
+                    <!-- Las 100 casillas se crearán con JavaScript en una fase posterior. -->
+                    <div id="tablero-jugador" class="tablero" aria-label="Tablero del jugador"></div>
+                </div>
+                <div class="contador">Ships placed: <strong id="barcos-colocados">0 / 5</strong></div>
+            </article>
+
+            <article class="panel-tablero">
+                <div class="titulo-tablero">
+                    <div>
+                        <h2>Enemy fleet</h2>
+                        <p>Machine's board</p>
+                    </div>
+                    <span class="indicador indicador-enemigo">ENEMY</span>
+                </div>
+
+                <div class="marco-tablero">
+                    <div class="esquina" aria-hidden="true"></div>
+                    <div class="coordenadas-columnas" aria-hidden="true">
+                        <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span>
+                        <span>F</span><span>G</span><span>H</span><span>I</span><span>J</span>
+                    </div>
+                    <div class="coordenadas-filas" aria-hidden="true">
+                        <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                        <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
+                    </div>
+                    <!-- Las 100 casillas se crearán con JavaScript en una fase posterior. -->
+                    <div id="tablero-enemigo" class="tablero" aria-label="Tablero enemigo"></div>
+                </div>
+                <div class="contador">Shots fired: <strong id="disparos-realizados">0</strong></div>
+            </article>
+        </section>
+
+        <section class="leyenda" aria-label="Leyenda del tablero">
+            <h2>Caption</h2>
+            <div class="elementos-leyenda">
+                <span><i class="muestra muestra-agua"></i> Water</span>
+                <span><i class="muestra muestra-barco"></i> Ship</span>
+                <span><i class="muestra muestra-tocado"></i> Touched</span>
+                <span><i class="muestra muestra-fallo"></i> Failed</span>
+            </div>
+        </section>
+
+        <footer class="pie">
+            <span>Fleet clasic: 5 ships · 17 boxes</span>
+            <span>10 x 10 board</span>
+        </footer>
+    </main>
 </body>
 </html>

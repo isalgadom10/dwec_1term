@@ -1,0 +1,374 @@
+/* Hundir la flota — estilos de la interfaz inicial
+   Las casillas se generarán posteriormente con JavaScript. */
+
+:root {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #183247;
+    background: #eef4f8;
+    font-synthesis: none;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top right, rgba(72, 155, 190, 0.13), transparent 30rem),
+        #eef4f8;
+}
+
+.cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 28px max(24px, calc((100% - 1120px) / 2));
+    color: white;
+    background: #173b56;
+}
+
+.sobretitulo {
+    margin: 0 0 6px;
+    color: #8ed4e8;
+    font-size: 0.72rem;
+    font-weight: bold;
+    letter-spacing: 0.16em;
+}
+
+h1 {
+    margin: 0;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+}
+
+.subtitulo {
+    margin: 8px 0 0;
+    color: #d5e6ef;
+}
+
+.contenedor {
+    width: min(1120px, calc(100% - 32px));
+    margin: 28px auto 40px;
+}
+
+.panel-configuracion,
+.panel-tablero,
+.leyenda {
+    border: 1px solid #d9e4eb;
+    border-radius: 14px;
+    background: white;
+    box-shadow: 0 5px 18px rgba(27, 57, 77, 0.06);
+}
+
+.panel-configuracion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 20px 22px;
+}
+
+h2 {
+    margin: 0;
+    font-size: 1.08rem;
+}
+
+.ayuda,
+.titulo-tablero p {
+    margin: 6px 0 0;
+    color: #718493;
+    font-size: 0.9rem;
+}
+
+.controles {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.controles label,
+.etiqueta-orientacion {
+    color: #526979;
+    font-size: 0.88rem;
+    font-weight: bold;
+}
+
+select {
+    min-height: 40px;
+    padding: 0 34px 0 12px;
+    border: 1px solid #cbd9e2;
+    border-radius: 8px;
+    color: #183247;
+    background: white;
+    font: inherit;
+}
+
+.grupo-botones {
+    display: flex;
+    gap: 6px;
+}
+
+.boton {
+    min-height: 40px;
+    padding: 0 15px;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    font: inherit;
+    font-weight: bold;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.boton:active {
+    transform: translateY(1px);
+}
+
+.boton-secundario {
+    color: #173b56;
+    background: #d9f0f6;
+}
+
+.boton-secundario:hover {
+    background: #c5e8f1;
+}
+
+.boton-orientacion {
+    min-height: 38px;
+    padding: 0 12px;
+    border: 1px solid #cbd9e2;
+    color: #526979;
+    background: white;
+    font-size: 0.88rem;
+}
+
+.boton-orientacion.activo {
+    border-color: #167da2;
+    color: white;
+    background: #167da2;
+}
+
+.mensaje {
+    margin: 18px 0;
+    padding: 13px 16px;
+    border-left: 4px solid #2b9ab8;
+    border-radius: 7px;
+    color: #28536b;
+    background: #e0f3f8;
+}
+
+.zona-tableros {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.panel-tablero {
+    min-width: 0;
+    padding: 20px;
+}
+
+.titulo-tablero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.indicador {
+    padding: 6px 9px;
+    border-radius: 20px;
+    font-size: 0.68rem;
+    font-weight: bold;
+    letter-spacing: 0.07em;
+}
+
+.indicador-jugador {
+    color: #176b83;
+    background: #dff3f7;
+}
+
+.indicador-enemigo {
+    color: #765b9b;
+    background: #eee8f7;
+}
+
+/* Cuadrícula con coordenadas: las casillas se añadirán desde JavaScript. */
+.marco-tablero {
+    display: grid;
+    grid-template-columns: 25px minmax(0, 1fr);
+    grid-template-rows: 25px auto;
+    width: min(100%, 440px);
+    margin: 0 auto;
+    gap: 4px;
+}
+
+.esquina {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.coordenadas-columnas {
+    grid-column: 2;
+    grid-row: 1;
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    align-items: center;
+    text-align: center;
+    color: #617889;
+    font-size: 0.72rem;
+    font-weight: bold;
+}
+
+.coordenadas-filas {
+    grid-column: 1;
+    grid-row: 2;
+    display: grid;
+    grid-template-rows: repeat(10, minmax(0, 1fr));
+    align-items: center;
+    justify-items: center;
+    color: #617889;
+    font-size: 0.72rem;
+    font-weight: bold;
+}
+
+.tablero {
+    grid-column: 2;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    grid-template-rows: repeat(10, minmax(0, 1fr));
+    aspect-ratio: 1;
+    gap: 2px;
+    padding: 3px;
+    border: 1px solid #173b56;
+    border-radius: 5px;
+    background: #173b56;
+}
+
+/* Clase que tendrán los div creados con createElement(). */
+.casilla {
+    min-width: 0;
+    min-height: 0;
+    border-radius: 2px;
+    background: #a9d9e8;
+    cursor: pointer;
+}
+
+.casilla:hover {
+    background: #d0edf5;
+}
+
+/* Clases preparadas para las siguientes fases del proyecto. */
+.casilla.barco {
+    background: #71899a;
+}
+
+.casilla.tocado {
+    background: #e66b57;
+}
+
+.casilla.fallo {
+    background: #f4f7f8;
+}
+
+.contador {
+    margin-top: 16px;
+    color: #718493;
+    font-size: 0.88rem;
+    text-align: center;
+}
+
+.contador strong {
+    color: #183247;
+}
+
+.leyenda {
+    margin-top: 20px;
+    padding: 18px 22px;
+}
+
+.elementos-leyenda {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 13px;
+    color: #526979;
+    font-size: 0.88rem;
+}
+
+.elementos-leyenda span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.muestra {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border: 1px solid rgba(23, 59, 86, 0.2);
+    border-radius: 3px;
+}
+
+.muestra-agua { background: #a9d9e8; }
+.muestra-barco { background: #71899a; }
+.muestra-tocado { background: #e66b57; }
+.muestra-fallo { background: #f4f7f8; }
+
+.pie {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 4px 0;
+    color: #8293a0;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 850px) {
+    .panel-configuracion {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .controles {
+        width: 100%;
+    }
+
+    .zona-tableros {
+        grid-template-columns: 1fr;
+    }
+
+    .panel-tablero {
+        padding: 16px;
+    }
+
+    .marco-tablero {
+        width: min(100%, 440px);
+    }
+}
+
+@media (max-width: 480px) {
+    .cabecera {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 24px 18px;
+    }
+
+    .controles {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    select {
+        width: 100%;
+    }
+
+    .pie {
+        flex-direction: column;
+    }
+}

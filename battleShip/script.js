@@ -1,3 +1,12 @@
+const mensaje = document.getElementById("mensaje");
+const barcosColocados = document.getElementById("barcos-colocados");
+const disparosRealizados = document.getElementById("disparos-realizados");
+const nuevoJuego = document.getElementById("nuevo-juego");
+const selectorBarco = document.getElementById("selector-barco");
+
+const disparos = 4;
+const colocados = 4;
+
 const crearTablero = () => {
     const tablero = [];
     
@@ -44,6 +53,18 @@ const contarCasillasOcupadas = (tablero) => {
     }
     return ocupadas;
 }
+
+const mostrarMensaje = (texto) => {
+    mensaje.textContent = texto;
+}
+
+const actualizarInformacion = () => {
+    disparosRealizados.textContent = disparos;
+    barcosColocados.textContent = colocados;
+}
+
+actualizarInformacion();
+mostrarMensaje("Welcome!!");
 
 let tablero = crearTablero();
 mostrarTablero(tablero);
