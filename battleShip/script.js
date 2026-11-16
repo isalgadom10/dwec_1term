@@ -4,16 +4,38 @@ const disparosRealizados = document.getElementById("disparos-realizados");
 const nuevoJuego = document.getElementById("nuevo-juego");
 const selectorBarco = document.getElementById("selector-barco");
 
-const disparos = 4;
-const colocados = 4;
+const botonHorizontal = document.getElementById("horizontal");
+const botonVertical = document.getElementById("vertical");
 
-const crearTablero = () => {
-    const tablero = [];
-    
+const casillas = document.querySelectorAll(".casilla");
+
+let casillaSeleccionada = null;
+
+const disparos = 0;
+const colocados = 0;
+
+
+const crearTablero = (idTablero) => {
+    const tablero = document.getElementById(idTablero);
+
     for (let i = 0; i < 10; i++) {
-        tablero[i] = [];
         for (let j = 0; j < 10; j++) {
-            tablero[i][j] = 0;
+            const casillaUnica = document.createElement("div");
+            casillaUnica.classList.add("casilla");
+            casillaUnica.id = `${tablero}-${i}-${j}`;
+            tablero.appendChild(casillaUnica);
+            //casillaUnica.addEventListener("click", () => {
+                if (casillaSeleccionada !== null) {
+                    casillaSeleccionada.classList.remove("seleccionada");
+                }
+                casilla.classList.add("seleccionada");
+                casillaSeleccionada = casilla;
+        
+                const fila = casilla.dataset.row;
+                const columna = casilla.dataset.col;
+        
+                mostrarMensaje(`You selected row ${fila}, column ${columna}`);
+            });
         }
     }
     return tablero;
@@ -63,9 +85,19 @@ const actualizarInformacion = () => {
     barcosColocados.textContent = colocados;
 }
 
-actualizarInformacion();
-mostrarMensaje("Welcome!!");
 
-let tablero = crearTablero();
-mostrarTablero(tablero);
-console.log(`Hay ${contarCasillasOcupadas(tablero)} casillas ocupadas`);
+crearTablero("tablero-jugador");
+crearTablero("tablero-enemigo");
+
+botonHorizontal.addEventListener("click", () => {
+    botonHorizontal.classList.add("activo");
+    botonVertical.classList.remove("activo");
+    mostrarMensaje("Orientación horizontal");
+});
+
+botonVertical.addEventListener("click", () => {
+    botonVertical.classList.add("activo");
+    botonHorizontal.classList.remove("activo");
+    mostrarMensaje("Orientación vertical");
+});
+

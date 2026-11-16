@@ -276,6 +276,11 @@ select {
     background: #f4f7f8;
 }
 
+.casilla.seleccionada {
+    background-color: #f4c95d;
+    outline: 2px solid #e2a928;
+}
+
 .contador {
     margin-top: 16px;
     color: #718493;
