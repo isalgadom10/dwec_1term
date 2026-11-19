@@ -1,20 +1,20 @@
+//coger los elementos del DOM necesarios
 const mensaje = document.getElementById("mensaje");
 const barcosColocados = document.getElementById("barcos-colocados");
 const disparosRealizados = document.getElementById("disparos-realizados");
 const nuevoJuego = document.getElementById("nuevo-juego");
 const selectorBarco = document.getElementById("selector-barco");
-
 const botonHorizontal = document.getElementById("horizontal");
 const botonVertical = document.getElementById("vertical");
 
-const casillas = document.querySelectorAll(".casilla");
-
+//saber que casilla esta seleccionada
 let casillaSeleccionada = null;
 
+//variables como contadores
 const disparos = 0;
 const colocados = 0;
 
-
+// funciones
 const crearTablero = (idTablero) => {
     const tablero = document.getElementById(idTablero);
 
@@ -22,34 +22,49 @@ const crearTablero = (idTablero) => {
         for (let j = 0; j < 10; j++) {
             const casillaUnica = document.createElement("div");
             casillaUnica.classList.add("casilla");
-            casillaUnica.id = `${tablero}-${i}-${j}`;
+            casillaUnica.id = `${idTablero}-${i}-${j}`;
             tablero.appendChild(casillaUnica);
-            //casillaUnica.addEventListener("click", () => {
-                if (casillaSeleccionada !== null) {
-                    casillaSeleccionada.classList.remove("seleccionada");
+            
+            casillaUnica.addEventListener('click', () => {
+                casillaUnica.classList.toggle("seleccionada");
+                mensaje.textContent = `You selected row ${i+1}, column ${j+1} in the ${idTablero} board.`;
+                
+                /*if (casillaSeleccionada) {
+                  casillaSeleccionada.classList.remove('seleccionada');
                 }
-                casilla.classList.add("seleccionada");
-                casillaSeleccionada = casilla;
-        
-                const fila = casilla.dataset.row;
-                const columna = casilla.dataset.col;
-        
-                mostrarMensaje(`You selected row ${fila}, column ${columna}`);
-            });
+                casillaUnica.classList.add('seleccionada');
+                casillaSeleccionada = casillaUnica;
+                mensaje.textContent = `You selected row ${i+1}, column ${j+1} in the ${idTablero} board.`;
+                */
+            });            
         }
     }
     return tablero;
 }
 
 const crearBarcos = () => {
-    const barcos = [
-        {ship: "Carrier", length: 5},
-        {ship: "Battleship", length: 4},
-        {ship: "Destroyer", length: 3},
-        {ship: "Submarine", length: 3},
-        {ship: "Patrol Boat", length: 2}
-    ];
-    return barcos;
+    const barcos = {
+        carrier: {ship: "Carrier", length: 5, placed: false},
+        battleship: {ship: "Battleship", length: 4, placed: false},
+        destroyer: {ship: "Destroyer", length: 3, placed: false},
+        submarine: {ship: "Submarine", length: 3, placed: false},
+        patrolBoat: {ship: "Patrol Boat", length: 2, placed: false}
+    };
+
+    let barcoSeleccionado = "";
+    let lengthShip = 0;
+
+    selectorBarco.addEventListener("change", () => {
+        barcoSeleccionado = selectorBarco.value;
+        const barco = barcos[barcoSeleccionado];
+        
+        if (!barcoSeleccionado) return;
+
+        console.log(barcos);
+        /*if (barcos[barcoSeleccionado].placed) {
+            
+        }*/
+    });
 }
 
 const mostrarTablero = (tab) => {
@@ -85,10 +100,11 @@ const actualizarInformacion = () => {
     barcosColocados.textContent = colocados;
 }
 
-
+//lamar a las funciones para crear los tableros
 crearTablero("tablero-jugador");
 crearTablero("tablero-enemigo");
 
+//añadir eventos en los botones
 botonHorizontal.addEventListener("click", () => {
     botonHorizontal.classList.add("activo");
     botonVertical.classList.remove("activo");
@@ -100,4 +116,3 @@ botonVertical.addEventListener("click", () => {
     botonHorizontal.classList.remove("activo");
     mostrarMensaje("Orientación vertical");
 });
-
