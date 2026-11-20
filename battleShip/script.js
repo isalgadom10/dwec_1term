@@ -8,11 +8,14 @@ const botonHorizontal = document.getElementById("horizontal");
 const botonVertical = document.getElementById("vertical");
 
 //saber que casilla esta seleccionada
-let casillaSeleccionada = null;
+let casillaSeleccionada = "";
 
 //variables como contadores
 const disparos = 0;
 const colocados = 0;
+
+//guardar la orientacion del barco
+let orientacion = "h";
 
 // funciones
 const crearTablero = (idTablero) => {
@@ -23,24 +26,45 @@ const crearTablero = (idTablero) => {
             const casillaUnica = document.createElement("div");
             casillaUnica.classList.add("casilla");
             casillaUnica.id = `${idTablero}-${i}-${j}`;
+            casillaUnica.setAttribute("data-row", i);
+            casillaUnica.setAttribute("data-column", j);
             tablero.appendChild(casillaUnica);
             
             casillaUnica.addEventListener('click', () => {
                 casillaUnica.classList.toggle("seleccionada");
                 mensaje.textContent = `You selected row ${i+1}, column ${j+1} in the ${idTablero} board.`;
-                
-                /*if (casillaSeleccionada) {
-                  casillaSeleccionada.classList.remove('seleccionada');
-                }
-                casillaUnica.classList.add('seleccionada');
                 casillaSeleccionada = casillaUnica;
-                mensaje.textContent = `You selected row ${i+1}, column ${j+1} in the ${idTablero} board.`;
-                */
             });            
         }
     }
     return tablero;
-}
+};
+
+const colocarBarco = (longitud, row, column, orientation) => {
+    let casillasOcuapadas = [];
+
+    const filaInicial = parseInt(row);
+    const columnaInicial = parseInt(column);
+
+    for (let i = 0; i < longitud; i++) {
+        let fila = filaInicial;
+        let columna = columnaInicial;
+
+        if (orientation === "h") {
+            columna = columnaInicial + i;
+        } else if (orientation === "v") {
+            fila = filaInicial + i;
+        }
+
+        if (fila < 0 || fila >= 10 || columna < 0 || columna >= 10) {
+            casillasOcuapadas = [];
+            mensaje.textContent = "No se puede colocar el barco, se desborda del tablero";
+        } else {
+            casillasOcuapadas.push({row: fila, col: columna});
+        }
+    }
+    return casillasOcuapadas;
+};
 
 const crearBarcos = () => {
     const barcos = {
@@ -55,17 +79,34 @@ const crearBarcos = () => {
     let lengthShip = 0;
 
     selectorBarco.addEventListener("change", () => {
-        barcoSeleccionado = selectorBarco.value;
-        const barco = barcos[barcoSeleccionado];
+        const valorBarco = selectorBarco.value;
+        const barco = barcos[valorBarco];
         
-        if (!barcoSeleccionado) return;
+        
+        if (!barco) {
+            barcoSeleccionado = "";
+            lengthShip = 0;
+            mensaje.textContent = "Selecciona un barco válido";
+            return;
+        } else if (barco.placed) {
+            barcoSeleccionado = "";
+            lengthShip = 0;
+            mensaje.textContent = `El ${barco.ship} ya ha sido colocado`;
+            return;
+        }
+        if (!casillaSeleccionada) {
+            mensaje.textContent = "Debes selecionar una casilla";
+            barcoSeleccionado = "";
+            return;
+        }
 
-        console.log(barcos);
-        /*if (barcos[barcoSeleccionado].placed) {
-            
-        }*/
+        barcoSeleccionado = barco;
+        lengthShip = barco.length;
+        const posiciones = colocarBarco(barcoSeleccionado.length, casillaSeleccionada.getAttribute("data-row"), casillaSeleccionada.getAttribute("data-column"), orientacion);
+        console.log("casillas calculadas: ", posiciones);
+        mensaje.textContent = `Has selecionado ${barco.ship}`;
     });
-}
+};
 
 const mostrarTablero = (tab) => {
     let fila = "";
@@ -76,7 +117,7 @@ const mostrarTablero = (tab) => {
         fila += "\n";
     }
     console.log(fila);
-}
+};
 
 const contarCasillasOcupadas = (tablero) => {
     let ocupadas = 0;
@@ -89,16 +130,16 @@ const contarCasillasOcupadas = (tablero) => {
         }
     }
     return ocupadas;
-}
+};
 
 const mostrarMensaje = (texto) => {
     mensaje.textContent = texto;
-}
+};
 
 const actualizarInformacion = () => {
     disparosRealizados.textContent = disparos;
     barcosColocados.textContent = colocados;
-}
+};
 
 //lamar a las funciones para crear los tableros
 crearTablero("tablero-jugador");
@@ -109,10 +150,14 @@ botonHorizontal.addEventListener("click", () => {
     botonHorizontal.classList.add("activo");
     botonVertical.classList.remove("activo");
     mostrarMensaje("Orientación horizontal");
+    orientacion = "h";
 });
 
 botonVertical.addEventListener("click", () => {
     botonVertical.classList.add("activo");
     botonHorizontal.classList.remove("activo");
     mostrarMensaje("Orientación vertical");
+    orientacion = "v";
 });
+
+crearBarcos();
