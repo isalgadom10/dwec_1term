@@ -1,3 +1,5 @@
+//////barcos colocados ////////
+
 //coger los elementos del DOM necesarios
 const mensaje = document.getElementById("mensaje");
 const barcosColocados = document.getElementById("barcos-colocados");
@@ -7,65 +9,15 @@ const selectorBarco = document.getElementById("selector-barco");
 const botonHorizontal = document.getElementById("horizontal");
 const botonVertical = document.getElementById("vertical");
 
-//saber que casilla esta seleccionada
+//variables de estado globales
 let casillaSeleccionada = "";
-
-//variables como contadores
-const disparos = 0;
-const colocados = 0;
-
-//guardar la orientacion del barco
+let barcoSeleccionado = "";
+let disparos = 0;
+let colocados = 0;
 let orientacion = "h";
+let tabla = [];
 
 // funciones
-const crearTablero = (idTablero) => {
-    const tablero = document.getElementById(idTablero);
-
-    for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 10; j++) {
-            const casillaUnica = document.createElement("div");
-            casillaUnica.classList.add("casilla");
-            casillaUnica.id = `${idTablero}-${i}-${j}`;
-            casillaUnica.setAttribute("data-row", i);
-            casillaUnica.setAttribute("data-column", j);
-            tablero.appendChild(casillaUnica);
-            
-            casillaUnica.addEventListener('click', () => {
-                casillaUnica.classList.toggle("seleccionada");
-                mensaje.textContent = `You selected row ${i+1}, column ${j+1} in the ${idTablero} board.`;
-                casillaSeleccionada = casillaUnica;
-            });            
-        }
-    }
-    return tablero;
-};
-
-const colocarBarco = (longitud, row, column, orientation) => {
-    let casillasOcuapadas = [];
-
-    const filaInicial = parseInt(row);
-    const columnaInicial = parseInt(column);
-
-    for (let i = 0; i < longitud; i++) {
-        let fila = filaInicial;
-        let columna = columnaInicial;
-
-        if (orientation === "h") {
-            columna = columnaInicial + i;
-        } else if (orientation === "v") {
-            fila = filaInicial + i;
-        }
-
-        if (fila < 0 || fila >= 10 || columna < 0 || columna >= 10) {
-            casillasOcuapadas = [];
-            mensaje.textContent = "No se puede colocar el barco, se desborda del tablero";
-        } else {
-            casillasOcuapadas.push({row: fila, col: columna});
-        }
-    }
-    return casillasOcuapadas;
-};
-
 const crearBarcos = () => {
     const barcos = {
         carrier: {ship: "Carrier", length: 5, placed: false},
@@ -75,9 +27,6 @@ const crearBarcos = () => {
         patrolBoat: {ship: "Patrol Boat", length: 2, placed: false}
     };
 
-    let barcoSeleccionado = "";
-    let lengthShip = 0;
-
     selectorBarco.addEventListener("change", () => {
         const valorBarco = selectorBarco.value;
         const barco = barcos[valorBarco];
@@ -85,27 +34,90 @@ const crearBarcos = () => {
         
         if (!barco) {
             barcoSeleccionado = "";
-            lengthShip = 0;
-            mensaje.textContent = "Selecciona un barco válido";
+            mensaje.textContent = "Select a valid ship";
             return;
         } else if (barco.placed) {
             barcoSeleccionado = "";
-            lengthShip = 0;
-            mensaje.textContent = `El ${barco.ship} ya ha sido colocado`;
+            mensaje.textContent = `${barco.ship} has already been selected`;
             return;
         }
-        if (!casillaSeleccionada) {
-            mensaje.textContent = "Debes selecionar una casilla";
-            barcoSeleccionado = "";
-            return;
-        }
-
+        
         barcoSeleccionado = barco;
-        lengthShip = barco.length;
-        const posiciones = colocarBarco(barcoSeleccionado.length, casillaSeleccionada.getAttribute("data-row"), casillaSeleccionada.getAttribute("data-column"), orientacion);
-        console.log("casillas calculadas: ", posiciones);
-        mensaje.textContent = `Has selecionado ${barco.ship}`;
+        mensaje.textContent = `You have selected ${barco.ship}`;
     });
+};
+
+const colocarBarco = (idTablero, longitud, row, column, orientation) => {
+    let casillasOcuapadas = [];
+    
+    const filaInicial = parseInt(row);
+    const columnaInicial = parseInt(column);
+
+    for (let i = 0; i < longitud; i++) {
+        let fila = orientation === "v" ? filaInicial + i : filaInicial;
+        let columna = orientation === "h" ? columnaInicial + i : columnaInicial;
+
+        const comprobarCelda = document.getElementById(`${idTablero}-${fila}-${columna}`);
+        if (fila < 0 || fila >= 10 || columna < 0 || columna >= 10) {
+            mensaje.textContent = "The ship cannot be placed, it extends beyond the board";
+            return [];
+        } else if (tabla[fila][columna] === 1) {
+            mensaje.textContent = "Cannot overlap ships! Choose another position";
+            return [];
+        } else {
+            casillasOcuapadas.push({row: fila, col: columna});
+        }
+    }
+    return casillasOcuapadas;
+};
+
+const crearTablero = (idTablero) => {
+    const tablero = document.getElementById(idTablero);
+    for (let i = 0; i < 10; i++) {
+        const fila = [];
+        for (let j = 0; j < 10; j++) {
+            fila.push(0);
+            const casillaUnica = document.createElement("div");
+            casillaUnica.classList.add("casilla");
+            casillaUnica.id = `${idTablero}-${i}-${j}`;
+            casillaUnica.setAttribute("data-row", i);
+            casillaUnica.setAttribute("data-column", j);
+            tablero.appendChild(casillaUnica);
+            
+            casillaUnica.addEventListener('click', () => {
+                if (idTablero !== "tablero-jugador") return;
+                
+                if (!barcoSeleccionado) {
+                    mensaje.textContent = "You must select a ship first";
+                    return;
+                }
+
+                casillaSeleccionada = casillaUnica;
+
+                const posiciones = colocarBarco(idTablero, barcoSeleccionado.length, casillaSeleccionada.getAttribute("data-row"), casillaSeleccionada.getAttribute("data-column"), orientacion);
+
+                if (posiciones.length > 0) {
+                    posiciones.forEach( pos => {
+                        tabla[pos.row][pos.col] = 1;
+                        const celda = document.getElementById(`${idTablero}-${pos.row}-${pos.col}`);
+                        celda.classList.add("seleccionada");
+                    });
+                    if (barcosColocados === 5) {
+                        mensaje.textContent = "Your fleet is already!";
+                        selectorBarco.disabled = true;
+                    }
+                    barcoSeleccionado.placed = true;
+                    barcoSeleccionado = "";
+                    selectorBarco.value = "";
+                    barcosColocados++;
+                    actualizarInformacion();
+                    mensaje.textContent = "Ship placed!";
+                }
+            });            
+        }
+        tabla.push(fila);
+    }
+    return tablero;
 };
 
 const mostrarTablero = (tab) => {
@@ -126,7 +138,7 @@ const contarCasillasOcupadas = (tablero) => {
         for (let j = 0; j < tablero[i].length; j++) {
             if (tablero[i][j] === 1) {
                 ocupadas++;
-            }            
+            }
         }
     }
     return ocupadas;
