@@ -1,5 +1,3 @@
-//////barcos colocados ////////
-
 //coger los elementos del DOM necesarios
 const mensaje = document.getElementById("mensaje");
 const barcosColocados = document.getElementById("barcos-colocados");
@@ -31,7 +29,6 @@ const crearBarcos = () => {
         const valorBarco = selectorBarco.value;
         const barco = barcos[valorBarco];
         
-        
         if (!barco) {
             barcoSeleccionado = "";
             mensaje.textContent = "Select a valid ship";
@@ -47,7 +44,7 @@ const crearBarcos = () => {
     });
 };
 
-const colocarBarco = (idTablero, longitud, row, column, orientation) => {
+const colocarBarco = (longitud, row, column, orientation) => {
     let casillasOcuapadas = [];
     
     const filaInicial = parseInt(row);
@@ -57,7 +54,6 @@ const colocarBarco = (idTablero, longitud, row, column, orientation) => {
         let fila = orientation === "v" ? filaInicial + i : filaInicial;
         let columna = orientation === "h" ? columnaInicial + i : columnaInicial;
 
-        const comprobarCelda = document.getElementById(`${idTablero}-${fila}-${columna}`);
         if (fila < 0 || fila >= 10 || columna < 0 || columna >= 10) {
             mensaje.textContent = "The ship cannot be placed, it extends beyond the board";
             return [];
@@ -102,14 +98,16 @@ const crearTablero = (idTablero) => {
                         const celda = document.getElementById(`${idTablero}-${pos.row}-${pos.col}`);
                         celda.classList.add("seleccionada");
                     });
-                    if (barcosColocados === 5) {
-                        mensaje.textContent = "Your fleet is already!";
-                        selectorBarco.disabled = true;
+                    
+                    const opcionSelecionada = selectorBarco.querySelector(`option[value="${selectorBarco.value}"]`);
+                    if (opcionSelecionada) {
+                        opcionSelecionada.disabled = true;
                     }
+                    
                     barcoSeleccionado.placed = true;
                     barcoSeleccionado = "";
                     selectorBarco.value = "";
-                    barcosColocados++;
+                    colocados++;
                     actualizarInformacion();
                     mensaje.textContent = "Ship placed!";
                 }
@@ -161,14 +159,14 @@ crearTablero("tablero-enemigo");
 botonHorizontal.addEventListener("click", () => {
     botonHorizontal.classList.add("activo");
     botonVertical.classList.remove("activo");
-    mostrarMensaje("Orientación horizontal");
+    mostrarMensaje("Orientation horizontal");
     orientacion = "h";
 });
 
 botonVertical.addEventListener("click", () => {
     botonVertical.classList.add("activo");
     botonHorizontal.classList.remove("activo");
-    mostrarMensaje("Orientación vertical");
+    mostrarMensaje("Orientation vertical");
     orientacion = "v";
 });
 
