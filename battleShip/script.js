@@ -13,7 +13,11 @@ let barcoSeleccionado = "";
 let disparos = 0;
 let colocados = 0;
 let orientacion = "h";
-let tabla = [];
+
+//tableros
+let tablaJugador= [];
+let tablaEnemiga = [];
+let disparosJugador = [];
 
 // funciones
 const crearBarcos = () => {
@@ -44,7 +48,7 @@ const crearBarcos = () => {
     });
 };
 
-const colocarBarco = (longitud, row, column, orientation) => {
+const colocarBarco = (longitud, row, column, orientation, matriz) => {
     let casillasOcuapadas = [];
     
     const filaInicial = parseInt(row);
@@ -57,7 +61,7 @@ const colocarBarco = (longitud, row, column, orientation) => {
         if (fila < 0 || fila >= 10 || columna < 0 || columna >= 10) {
             mensaje.textContent = "The ship cannot be placed, it extends beyond the board";
             return [];
-        } else if (tabla[fila][columna] === 1) {
+        } else if (matriz[fila][columna] === 1) {
             mensaje.textContent = "Cannot overlap ships! Choose another position";
             return [];
         } else {
@@ -67,7 +71,7 @@ const colocarBarco = (longitud, row, column, orientation) => {
     return casillasOcuapadas;
 };
 
-const crearTablero = (idTablero) => {
+const crearTablero = (idTablero, matriz) => {
     const tablero = document.getElementById(idTablero);
     for (let i = 0; i < 10; i++) {
         const fila = [];
@@ -81,39 +85,48 @@ const crearTablero = (idTablero) => {
             tablero.appendChild(casillaUnica);
             
             casillaUnica.addEventListener('click', () => {
-                if (idTablero !== "tablero-jugador") return;
+                if (idTablero === "tablero-jugador") {
                 
-                if (!barcoSeleccionado) {
-                    mensaje.textContent = "You must select a ship first";
-                    return;
+                    if (!barcoSeleccionado) {
+                        mensaje.textContent = "You must select a ship first";
+                        return;
+                    }
+
+                    casillaSeleccionada = casillaUnica;
+
+                    const posiciones = colocarBarco(barcoSeleccionado.length, casillaSeleccionada.getAttribute("data-row"), casillaSeleccionada.getAttribute("data-column"), orientacion, matriz);
+
+                    if (posiciones.length > 0) {
+                        posiciones.forEach( pos => {
+                            matriz[pos.row][pos.col] = 1;
+                            const celda = document.getElementById(`${idTablero}-${pos.row}-${pos.col}`);
+                            celda.classList.add("seleccionada");
+                        });
+                        
+                        const opcionSelecionada = selectorBarco.querySelector(`option[value="${selectorBarco.value}"]`);
+                        if (opcionSelecionada) {
+                            opcionSelecionada.disabled = true;
+                        }
+                        
+                        barcoSeleccionado.placed = true;
+                        barcoSeleccionado = "";
+                        selectorBarco.value = "";
+                        colocados++;
+                        actualizarInformacion();
+                        mensaje.textContent = "Ship placed!";
+                    }
                 }
 
-                casillaSeleccionada = casillaUnica;
-
-                const posiciones = colocarBarco(idTablero, barcoSeleccionado.length, casillaSeleccionada.getAttribute("data-row"), casillaSeleccionada.getAttribute("data-column"), orientacion);
-
-                if (posiciones.length > 0) {
-                    posiciones.forEach( pos => {
-                        tabla[pos.row][pos.col] = 1;
-                        const celda = document.getElementById(`${idTablero}-${pos.row}-${pos.col}`);
-                        celda.classList.add("seleccionada");
-                    });
-                    
-                    const opcionSelecionada = selectorBarco.querySelector(`option[value="${selectorBarco.value}"]`);
-                    if (opcionSelecionada) {
-                        opcionSelecionada.disabled = true;
-                    }
-                    
-                    barcoSeleccionado.placed = true;
-                    barcoSeleccionado = "";
-                    selectorBarco.value = "";
-                    colocados++;
-                    actualizarInformacion();
-                    mensaje.textContent = "Ship placed!";
+                if (idTablero === "tablero-enemigo") {
+                    casillaSeleccionada = casillaUnica;
+                    const partesId = casillaUnica.id.split("-");
+                    const fila = parseInt(partesId[2]);
+                    const columna = parseInt(partesId[3]);
+                    realizarDisparo(fila, columna);
                 }
             });            
         }
-        tabla.push(fila);
+        matriz.push(fila);
     }
     return tablero;
 };
@@ -151,9 +164,23 @@ const actualizarInformacion = () => {
     barcosColocados.textContent = colocados;
 };
 
+const crearMatrizDisparos = () => {
+    const matriz = [];
+    for (let i = 0; i < 10; i++) {
+        const fila = [];
+        for (let j = 0; j < 10; j++) {
+            fila.push(0);
+        }
+        matriz.push(fila);
+    }
+    return matriz;
+};
+
+disparosJugador = crearMatrizDisparos();
+
 //lamar a las funciones para crear los tableros
-crearTablero("tablero-jugador");
-crearTablero("tablero-enemigo");
+crearTablero("tablero-jugador", tablaJugador);
+crearTablero("tablero-enemigo", tablaEnemiga);
 
 //añadir eventos en los botones
 botonHorizontal.addEventListener("click", () => {
